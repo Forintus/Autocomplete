@@ -4,5 +4,11 @@
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "proxies": [
+    {
+      "path": "/autocomplete",
+      "proxyUrl": "https://maps.googleapis.com/maps/api/place/autocomplete"
+    }
+  ]
 }

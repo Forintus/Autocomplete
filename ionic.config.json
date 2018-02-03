@@ -1,0 +1,8 @@
+{
+  "name": "Autocomplete",
+  "app_id": "a61341db",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}

@@ -11,7 +11,6 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class HomePage {
 
-  searchTerm: string = '';
   searchControl: FormControl;
   items: any;
 
@@ -21,22 +20,18 @@ export class HomePage {
 
   ionViewDidLoad() {
 
-    this.setFilteredItems();
-
     this.searchControl.valueChanges
       .debounceTime(400)
       .distinctUntilChanged()
-      .subscribe(search => {
-
-        this.setFilteredItems();
+      .subscribe((input: string) => {
+        this.setFilteredItems(input);
       });
   }
 
-  setFilteredItems() {
+  setFilteredItems(input: string) {
 
-    this.searchService.filterPlaces(this.searchTerm)
+    this.searchService.filterPlaces(input)
       .subscribe((data: any[]) => {
-
         this.items = data;
       });
   }

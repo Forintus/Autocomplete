@@ -22,7 +22,7 @@ export class SearchServiceProvider {
     // params need to be set in 1 call
     let params: HttpParams = new HttpParams()
       .set('input', input)
-      // .set('offset', '3')
+      // .set('offset', '3') // This screwes it up
       .set('types', 'geocode')
       .set('components', 'country:nl')
       .set('language', 'nl')

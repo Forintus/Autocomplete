@@ -5,16 +5,21 @@ import { SearchServiceProvider } from '../../providers/search-service/search-ser
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
+import { IonPullUpFooterState } from 'ionic-pullup';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
 
+  footerState: IonPullUpFooterState;
   searchControl: FormControl;
-  items: any;
+  items: any[] = [];
+  favorites: any[] = [];
 
   constructor(public navCtrl: NavController, private searchService: SearchServiceProvider) {
+    this.footerState = IonPullUpFooterState.Collapsed;
     this.searchControl = new FormControl();
   }
 
@@ -34,5 +39,21 @@ export class HomePage {
       .subscribe((data: any[]) => {
         this.items = data;
       });
+  }
+
+  footerExpanded() {
+    console.log('Footer expanded!');
+  }
+
+  footerCollapsed() {
+    console.log('Footer collapsed!');
+  }
+
+  toggleFooter() {
+    this.footerState = this.footerState == IonPullUpFooterState.Collapsed ? IonPullUpFooterState.Expanded : IonPullUpFooterState.Collapsed;
+  }
+
+  makeFavorite(item) {
+    this.favorites.push(item);
   }
 }

@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { IonPullupModule } from 'ionic-pullup';
 import { SearchServiceProvider } from '../providers/search-service/search-service';
 
 @NgModule({
@@ -17,7 +18,8 @@ import { SearchServiceProvider } from '../providers/search-service/search-servic
   imports: [
     BrowserModule,
     HttpClientModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonPullupModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

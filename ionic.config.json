@@ -9,6 +9,10 @@
     {
       "path": "/autocomplete",
       "proxyUrl": "https://maps.googleapis.com/maps/api/place/autocomplete"
+    },
+    {
+      "path": "/details",
+      "proxyUrl": "https://maps.googleapis.com/maps/api/place/details"
     }
   ]
 }

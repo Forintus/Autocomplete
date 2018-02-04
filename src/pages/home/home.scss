@@ -1,3 +1,11 @@
 page-home {
-    
+    ion-content {
+        ion-list {
+            ion-grid {
+                width: 100% !important;
+                height: 100% !important;
+                justify-content: center;
+            }
+        }
+    }
 }

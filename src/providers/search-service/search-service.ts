@@ -11,7 +11,8 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class SearchServiceProvider {
 
-  private url: string = '/autocomplete/json';
+  private autoComplete: string = '/autocomplete/json';
+  private detailsUrl: string = '/details/json';
 
   constructor(public http: HttpClient) {
     console.log('Constructing SearchService Provider');
@@ -29,7 +30,22 @@ export class SearchServiceProvider {
       .set('key', 'AIzaSyB7dHzT3pu9SMVY3fy8Ihq1zlU5s8Emrg0');
 
     return this.http
-      .get(this.url, { params: params })
+      .get(this.autoComplete, { params: params })
       .map((data: any) => data.predictions);
+  }
+
+  getPlaceDetails(placeid: string) {
+        // params need to be set in 1 call
+        let params: HttpParams = new HttpParams()
+        .set('placeid', placeid)
+        // .set('offset', '3') // This screwes it up
+        // .set('types', 'geocode')
+        // .set('components', 'country:nl')
+        // .set('language', 'nl')
+        .set('key', 'AIzaSyB7dHzT3pu9SMVY3fy8Ihq1zlU5s8Emrg0');
+  
+      return this.http
+        .get(this.detailsUrl, { params: params })
+        .map((data: any) => data.result);
   }
 }

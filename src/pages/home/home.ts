@@ -5,21 +5,18 @@ import { SearchServiceProvider } from '../../providers/search-service/search-ser
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import { IonPullUpFooterState } from 'ionic-pullup';
-
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
 
-  footerState: IonPullUpFooterState;
   searchControl: FormControl;
   items: any[] = [];
   favorites: any[] = [];
+  // showList: boolean = false;
 
   constructor(public navCtrl: NavController, private searchService: SearchServiceProvider) {
-    this.footerState = IonPullUpFooterState.Collapsed;
     this.searchControl = new FormControl();
   }
 
@@ -29,7 +26,9 @@ export class HomePage {
       .debounceTime(400)
       .distinctUntilChanged()
       .subscribe((input: string) => {
-        this.setFilteredItems(input);
+        if (input && input.trim() != '') {
+          this.setFilteredItems(input);
+        }
       });
   }
 
@@ -41,19 +40,29 @@ export class HomePage {
       });
   }
 
-  footerExpanded() {
-    console.log('Footer expanded!');
+  addToFavorites(item: any) {
+
+    this.searchService.getPlaceDetails(item.place_id)
+      .subscribe((data: any) => {
+
+        this.favorites.push(data);
+        this.items = [];
+        this.items.length = 0;
+        this.searchControl.reset();
+      });
   }
 
-  footerCollapsed() {
-    console.log('Footer collapsed!');
+  removeFromFavorites(favorite: any) {
+    // console.log(favorite);
+
+    let index = this.favorites.indexOf(favorite);
+
+    if (index > -1) {
+      this.favorites.splice(index, 1);
+    }
   }
 
-  toggleFooter() {
-    this.footerState = this.footerState == IonPullUpFooterState.Collapsed ? IonPullUpFooterState.Expanded : IonPullUpFooterState.Collapsed;
-  }
-
-  makeFavorite(item) {
-    this.favorites.push(item);
+  showGeocode(favorite: any) {
+    console.log(favorite.geometry.location);
   }
 }

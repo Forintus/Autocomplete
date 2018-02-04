@@ -1,37 +1,40 @@
 <ion-header>
-  <ion-navbar>
+  <!-- <ion-navbar>
     <ion-title>
       Autocomplete
     </ion-title>
-  </ion-navbar>
+  </ion-navbar> -->
+  <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl"></ion-searchbar>
+
 </ion-header>
 
-<ion-content>
-  <!-- <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl"></ion-searchbar> -->
+<ion-content no-bounce>
 
   <ion-list>
-    <ion-item *ngFor="let favorite of favorites">
-      {{ favorite.description }}
+    <ion-item *ngFor="let item of items" (tap)="addToFavorites(item)">
+        <ion-icon name="pin" color="primary" item-start></ion-icon>
+        <ion-label>{{ item.description }}</ion-label>
     </ion-item>
-  </ion-list>
-</ion-content>
-
-<ion-pullup (onExpand)="footerExpanded()" (onCollapse)="footerCollapsed()" [(state)]="footerState" maxHeight="300">
-  <!-- <ion-pullup-tab [footer]="pullup" (tap)="toggleFooter()">
-    <ion-icon name="arrow-up" *ngIf="footerState == 0"></ion-icon><ion-icon name="arrow-down" *ngIf="footerState == 1"></ion-icon>
-  </ion-pullup-tab> -->
-  <!-- <ion-toolbar color="primary" (tap)="toggleFooter()">
-    <ion-title>Footer</ion-title>
-  </ion-toolbar> -->
-  <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl" (tap)="toggleFooter()"></ion-searchbar>
-  <ion-content>
-    <ion-list>
-      <ion-item *ngFor="let item of items" (tap)="makeFavorite(item)">
-        {{ item.description }}
+    <ion-list-header>
+      Favorieten
+    </ion-list-header>
+    <ion-grid text-center *ngIf="favorites.length === 0">
+      No favorites
+    </ion-grid>
+    <!-- (ionDrag)="removeFromFavorites($event)" -->
+    <ion-item-sliding *ngFor="let favorite of favorites">
+      <ion-item (tap)="showGeocode(favorite)">
+        <ion-icon name="star" color="primary" item-start></ion-icon>
+        <ion-label>{{ favorite.formatted_address }}</ion-label>
       </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-pullup>
+      <ion-item-options side="right">
+        <!-- expandable -->
+        <button ion-button color="danger" (click)="removeFromFavorites(favorite)">Verwijderen</button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>
 
 <!-- [(ngModel)]="myInput"
   [showCancelButton]="shouldShowCancel"

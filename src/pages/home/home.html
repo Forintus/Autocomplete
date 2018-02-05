@@ -1,10 +1,7 @@
 <ion-header>
-  <!-- <ion-navbar>
-    <ion-title>
-      Autocomplete
-    </ion-title>
-  </ion-navbar> -->
-  <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl"></ion-searchbar>
+  <ion-navbar>
+    <ion-searchbar [(ngModel)]="searchTerm" [formControl]="searchControl"></ion-searchbar>
+  </ion-navbar>
 
 </ion-header>
 
@@ -12,14 +9,16 @@
 
   <ion-list>
     <ion-item *ngFor="let item of items" (tap)="addToFavorites(item)">
-        <ion-icon name="pin" color="primary" item-start></ion-icon>
-        <ion-label>{{ item.description }}</ion-label>
+      <ion-icon name="pin" color="primary" item-start></ion-icon>
+      <ion-label>{{ item.description }}</ion-label>
     </ion-item>
-    <ion-list-header>
-      Favorieten
+    <ion-list-header *ngIf="favorites.length > 0">
+      Recente locaties
     </ion-list-header>
-    <ion-grid text-center *ngIf="favorites.length === 0">
-      No favorites
+    <ion-grid *ngIf="favorites.length === 0">
+      <ion-row>
+        Geen recente locaties
+      </ion-row>
     </ion-grid>
     <!-- (ionDrag)="removeFromFavorites($event)" -->
     <ion-item-sliding *ngFor="let favorite of favorites">

@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NavController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular/components/toast/toast-controller';
+import { Toast } from 'ionic-angular/components/toast/toast';
 import { SearchServiceProvider } from '../../providers/search-service/search-service';
+import { ConnectivityProvider } from '../../providers/connectivity/connectivity';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
@@ -11,16 +14,23 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class HomePage {
 
-  searchControl: FormControl;
-  items: any[] = [];
-  favorites: any[] = [];
-  // showList: boolean = false;
+  private searchControl: FormControl;
+  private items: any[] = [];
+  private favorites: any[] = [];
+  private toastInstance: Toast;
 
-  constructor(public navCtrl: NavController, private searchService: SearchServiceProvider) {
+  constructor(public navCtrl: NavController, private searchService: SearchServiceProvider,
+    public connectivity: ConnectivityProvider, private toastCtrl: ToastController) {
     this.searchControl = new FormControl();
   }
 
   ionViewDidLoad() {
+
+    let msg: string = this.connectivity.isOnline() ? "We are online" : "Please make sure you are online";
+
+    this.presentToast(msg);
+
+    this.addConnectivityListeners();
 
     this.searchControl.valueChanges
       .debounceTime(400)
@@ -42,18 +52,22 @@ export class HomePage {
 
   addToFavorites(item: any) {
 
-    this.searchService.getPlaceDetails(item.place_id)
-      .subscribe((data: any) => {
+    let index = this.favorites.findIndex(favorite => favorite.place_id === item.place_id);
 
-        this.favorites.push(data);
-        this.items = [];
-        this.items.length = 0;
-        this.searchControl.reset();
-      });
+    if (index < 0) {
+      this.searchService.getPlaceDetails(item.place_id)
+        .subscribe((data: any) => {
+
+          this.favorites.push(data);
+          this.items = [];
+          this.items.length = 0;
+          this.searchControl.reset();
+          this.showGeocode(data);
+        });
+    }
   }
 
   removeFromFavorites(favorite: any) {
-    // console.log(favorite);
 
     let index = this.favorites.indexOf(favorite);
 
@@ -64,5 +78,38 @@ export class HomePage {
 
   showGeocode(favorite: any) {
     console.log(favorite.geometry.location);
+  }
+
+  addConnectivityListeners() {
+
+    window.ononline = () => {
+      console.log("online");
+      this.presentToast('You\'re back online')
+    }
+
+    window.onoffline = () => {
+      console.log("offline");
+      this.presentToast('You\'re offline')
+    }
+  }
+
+  presentToast(msg: string) {
+
+    if (this.toastInstance) {
+      return;
+    }
+
+    this.toastInstance = this.toastCtrl.create({
+      message: msg,
+      duration: 2000,
+      position: 'top'
+    });
+
+    this.toastInstance.onDidDismiss(() => {
+      this.toastInstance = null;
+      console.log('Dismissed toast');
+    });
+
+    this.toastInstance.present();
   }
 }

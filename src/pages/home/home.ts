@@ -3,10 +3,11 @@ import { FormControl } from '@angular/forms';
 import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular/components/toast/toast-controller';
 import { Toast } from 'ionic-angular/components/toast/toast';
-import { SearchServiceProvider } from '../../providers/search-service/search-service';
+import { SearchProvider } from '../../providers/search/search';
 import { ConnectivityProvider } from '../../providers/connectivity/connectivity';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { DataProvider } from '../../providers/data/data';
 
 @Component({
   selector: 'page-home',
@@ -19,14 +20,21 @@ export class HomePage {
   private favorites: any[] = [];
   private toastInstance: Toast;
 
-  constructor(public navCtrl: NavController, private searchService: SearchServiceProvider,
-    public connectivity: ConnectivityProvider, private toastCtrl: ToastController) {
+  constructor(public navCtrl: NavController, private searchProvider: SearchProvider, private dataProvider: DataProvider,
+    public connectivityProvider: ConnectivityProvider, private toastCtrl: ToastController) {
     this.searchControl = new FormControl();
+
+    this.dataProvider.getRecent()
+      .then((recent: any) => {
+        if (recent) {
+          this.favorites = recent;
+        }
+      })
   }
 
   ionViewDidLoad() {
 
-    let msg: string = this.connectivity.isOnline() ? "We are online" : "Please make sure you are online";
+    let msg: string = this.connectivityProvider.isOnline() ? "We are online" : "Please make sure you are online";
 
     this.presentToast(msg);
 
@@ -44,7 +52,7 @@ export class HomePage {
 
   setFilteredItems(input: string) {
 
-    this.searchService.filterPlaces(input)
+    this.searchProvider.filterPlaces(input)
       .subscribe((data: any[]) => {
         this.items = data;
       });
@@ -55,10 +63,11 @@ export class HomePage {
     let index = this.favorites.findIndex(favorite => favorite.place_id === item.place_id);
 
     if (index < 0) {
-      this.searchService.getPlaceDetails(item.place_id)
+      this.searchProvider.getPlaceDetails(item.place_id)
         .subscribe((data: any) => {
 
           this.favorites.push(data);
+          this.dataProvider.setRecent(this.favorites);
           this.items = [];
           this.items.length = 0;
           this.searchControl.reset();
@@ -73,6 +82,7 @@ export class HomePage {
 
     if (index > -1) {
       this.favorites.splice(index, 1);
+      this.dataProvider.setRecent(this.favorites);
     }
   }
 

@@ -5,11 +5,13 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Network } from '@ionic-native/network';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { SearchServiceProvider } from '../providers/search-service/search-service';
+import { SearchProvider } from '../providers/search/search';
 import { ConnectivityProvider } from '../providers/connectivity/connectivity';
+import { DataProvider } from '../providers/data/data';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { ConnectivityProvider } from '../providers/connectivity/connectivity';
       preloadModules: true,
       backButtonText: '',
       statusbarPadding: true
-    })
+    }),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -35,8 +38,9 @@ import { ConnectivityProvider } from '../providers/connectivity/connectivity';
     SplashScreen,
     Network,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    SearchServiceProvider,
-    ConnectivityProvider
+    SearchProvider,
+    ConnectivityProvider,
+    DataProvider
   ]
 })
 export class AppModule {}

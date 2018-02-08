@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
   and Angular DI.
 */
 @Injectable()
-export class SearchServiceProvider {
+export class SearchProvider {
 
   private autoComplete: string = '/autocomplete/json';
   private detailsUrl: string = '/details/json';

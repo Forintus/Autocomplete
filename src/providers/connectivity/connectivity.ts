@@ -16,6 +16,8 @@ export class ConnectivityProvider {
   onDevice: boolean;
 
   constructor(private platform: Platform, private network: Network) {
+    console.log('Constructing Connectivity Provider');
+    
     this.onDevice = this.platform.is('cordova');
   }
 
